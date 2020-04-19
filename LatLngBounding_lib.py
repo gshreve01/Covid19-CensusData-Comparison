@@ -7,6 +7,7 @@ Created on Sat Apr 18 15:54:41 2020
 
 import requests
 import numpy as np
+import pandas as pd
 from math import radians, sin, cos, acos, atan2, sqrt
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
@@ -40,65 +41,89 @@ def Bounding_Poligon_Into_Box(points):
     ymax = max(points[0])
     
     return {
-       'topleft' : { 'x': xmin, 'y' : ymax },
-       'topright' : { 'x' : xmax, 'y' : ymax },
-       'bottomleft' : { 'x' : xmin, 'y' : ymin },
-       'bottomright' : { 'x' : xmax, 'y' : ymin }}
+       'topleft' : { 'x': xmax, 'y' : ymax },
+       'topright' : { 'x' : xmin, 'y' : ymax },
+       'bottomleft' : { 'x' : xmax, 'y' : ymin },
+       'bottomright' : { 'x' : xmin, 'y' : ymin }}
 
 def Quad_Box(box):
     quad_boxes = []
     # take half of the distance between the length and width of box
-    half_width = (box["topleft"]["x"] - box["topright"]["x"]) / 2
-    half_height = (box["topleft"]["y"] - box["bottomleft"]["y"]) / 2
+    half_width = abs((box["topleft"]["x"] - box["topright"]["x"]) / 2)
+    half_height = abs((box["topleft"]["y"] - box["bottomleft"]["y"]) / 2)
+    
+    print(half_width)
+    print(half_height)
     
     # define top left box
-    quad_boxes.append({"topleft": {"x": box["topleft"]["x"],
+    top_left_box = {"topleft": {"x": box["topleft"]["x"],
                                    "y": box["topleft"]["y"]},
-                       "topright": {"x": box["topleft"]["x"] + half_width,
+                       "topright": {"x": box["topleft"]["x"] - half_width,
                                     "y": box["topright"]["y"]},
                        "bottomleft": {"x": box["topleft"]["x"],
-                                      "y": box["topleft"]["y"] + half_height},
-                       "bottomright":{"x": box["topleft"]["x"] + half_width,
-                                      "y": box["topright"]["y"] + half_height}                              
-        })  
+                                      "y": box["topleft"]["y"] - half_height},
+                       "bottomright":{"x": box["topleft"]["x"] - half_width,
+                                      "y": box["topright"]["y"] - half_height}                              
+        }
     
     # define top right box
-    quad_boxes.append({"topleft": {"x": box["topleft"]["x"] + half_width + 0.000001,
-                                   "y": box["topleft"]["y"]},
+    top_right_box = {"topleft": {"x":top_left_box["topright"]["x"] - 0.000001,
+                                   "y": top_left_box["topleft"]["y"]},
                        "topright": {"x": box["topright"]["x"] ,
-                                    "y": box["topright"]["y"]},
-                       "bottomleft": {"x": box["topleft"]["x"] + half_width + 0.000001,
-                                      "y": box["topleft"]["y"] + half_height + 0.000001},
+                                    "y": top_left_box["topright"]["y"]},
+                       "bottomleft": {"x": top_left_box["bottomright"]["x"] - 0.000001,
+                                      "y": top_left_box["bottomleft"]["y"]},
                        "bottomright":{"x": box["topright"]["x"],
-                                      "y": box["topright"]["y"] + half_height + 0.000001}                              
-        })
+                                      "y": top_left_box["bottomright"]["y"]}                              
+        }
 
     
     # define bottom left box
-    quad_boxes.append({"topleft": {"x": box["topleft"]["x"],
-                                   "y": box["topleft"]["y"] + half_height + 0.000001},
-                       "topright": {"x": box["topright"]["x"] + half_width + 0.000001 ,
-                                    "y": box["topright"]["y"]+ half_height + 0.000001},
-                       "bottomleft": {"x": box["bottomleft"]["x"],
+    bottom_left_box = {"topleft": {"x": top_left_box["topleft"]["x"],
+                                   "y": top_left_box["bottomleft"]["y"] - 0.000001},
+                       "topright": {"x": top_left_box["topright"]["x"],
+                                    "y": box["topright"]["y"]- half_height - 0.000001},
+                       "bottomleft": {"x": top_left_box["bottomleft"]["x"],
                                       "y": box["bottomleft"]["y"]},
-                       "bottomright":{"x": box["topright"]["x"]  + half_width + 0.000001,
+                       "bottomright":{"x": top_left_box["bottomright"]["x"],
                                       "y": box["bottomright"]["y"]}                              
-        })
+        }
     
     # define bottom right box
-    quad_boxes.append({"topleft": {"x": box["topleft"]["x"] + half_width + 0.000001,
-                                   "y": box["topleft"]["y"] + half_height + 0.000001},
-                       "topright": {"x": box["bottomright"]["x"],
-                                    "y": box["topright"]["y"]+ half_height + 0.000001},
-                       "bottomleft": {"x": box["bottomleft"]["x"] + half_width + 0.000001,
+    bottom_right_box = {"topleft": {"x": top_right_box["topleft"]["x"],
+                                   "y": bottom_left_box["topleft"]["y"]},
+                       "topright": {"x": top_right_box["topright"]["x"],
+                                    "y": bottom_left_box["topright"]["y"]},
+                       "bottomleft": {"x": top_right_box["bottomleft"]["x"],
                                       "y": box["bottomleft"]["y"]},
                        "bottomright":{"x": box["bottomright"]["x"],
                                       "y": box["bottomright"]["y"]}                              
-        })
+        }
+                        
+    quad_boxes.append(top_left_box)
+    quad_boxes.append(top_right_box)
+    quad_boxes.append(bottom_left_box)
+    quad_boxes.append(bottom_right_box)
     
     return quad_boxes
     
+def Get_Radius_Of_Box(box):
+    # determin radius based on center to topleft point
+    half_width = abs((box["topleft"]["x"] - box["topright"]["x"]) / 2)
+    half_height = abs((box["topleft"]["y"] - box["bottomleft"]["y"]) / 2)
+    
+    print(half_height)
+    print(half_width)
+    
+    midpoint = {"x": box["topleft"]["x"] - half_width,
+                "y": box["topleft"]["y"] - half_height}
+    
+    radius = Lat_Lng_Distance_From(box["topleft"]["y"], box["topleft"]["x"],
+                                   midpoint["y"], midpoint["x"])
+    
+    return radius
 
+    
     
 def Is_Point_Within_Charlotte_Boundary(lat, lng):
     # define variable as global to prevent multiple loads of geo data
@@ -126,15 +151,35 @@ print(Is_Point_Within_Charlotte_Boundary(35.227085, -80.043124)) # check if poly
 
 print(type(charlote_boundary_polygon))
 
-dist = Lat_Lng_Distance_From(36.0001, -80.0001, 36.1001, -80.0001)
-print(dist)
 
 charlotte_box = Bounding_Poligon_Into_Box(charlote_boundary_polygon.exterior.coords.xy)
 print(charlotte_box)
+charlotte_box["radius"] = Get_Radius_Of_Box(charlotte_box)
+print(f"charlotte radius: {charlotte_box['radius']}")
 
-quad_boxes = Quad_Box(charlotte_box)
-print(len(quad_boxes))
-print(quad_boxes)
+right_sized_boxes = []
+
+box_stack = []
+
+box_stack.append(charlotte_box)
+
+while len(box_stack) > 0:
+    box = box_stack.pop()
+    
+    boxes = Quad_Box(box)
+    for box in boxes:
+        box["radius"] = Get_Radius_Of_Box(box)
+        print(box)
+        if box["radius"] > 500:
+            box_stack.append(box)
+        else:
+            right_sized_boxes.append(box)
+
+
+    
+charlotte_boxes_df = pd.DataFrame(right_sized_boxes)
+charlotte_boxes_df.head()
+charlotte_boxes_df.to_csv("Charlotte_Boxes_LngLat.csv")
 
 
  
