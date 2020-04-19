@@ -33,7 +33,7 @@ def Load_Charlotte_Boundaries():
     #pprint(response)
     return response
 
-def bounding_box(points):
+def Bounding_Poligon_Into_Box(points):
     xmin = min(points[1])
     xmax = max(points[1])
     ymin = min(points[0])
@@ -44,6 +44,60 @@ def bounding_box(points):
        'topright' : { 'x' : xmax, 'y' : ymax },
        'bottomleft' : { 'x' : xmin, 'y' : ymin },
        'bottomright' : { 'x' : xmax, 'y' : ymin }}
+
+def Quad_Box(box):
+    quad_boxes = []
+    # take half of the distance between the length and width of box
+    half_width = (box["topleft"]["x"] - box["topright"]["x"]) / 2
+    half_height = (box["topleft"]["y"] - box["bottomleft"]["y"]) / 2
+    
+    # define top left box
+    quad_boxes.append({"topleft": {"x": box["topleft"]["x"],
+                                   "y": box["topleft"]["y"]},
+                       "topright": {"x": box["topleft"]["x"] + half_width,
+                                    "y": box["topright"]["y"]},
+                       "bottomleft": {"x": box["topleft"]["x"],
+                                      "y": box["topleft"]["y"] + half_height},
+                       "bottomright":{"x": box["topleft"]["x"] + half_width,
+                                      "y": box["topright"]["y"] + half_height}                              
+        })  
+    
+    # define top right box
+    quad_boxes.append({"topleft": {"x": box["topleft"]["x"] + half_width + 0.000001,
+                                   "y": box["topleft"]["y"]},
+                       "topright": {"x": box["topright"]["x"] ,
+                                    "y": box["topright"]["y"]},
+                       "bottomleft": {"x": box["topleft"]["x"] + half_width + 0.000001,
+                                      "y": box["topleft"]["y"] + half_height + 0.000001},
+                       "bottomright":{"x": box["topright"]["x"],
+                                      "y": box["topright"]["y"] + half_height + 0.000001}                              
+        })
+
+    
+    # define bottom left box
+    quad_boxes.append({"topleft": {"x": box["topleft"]["x"],
+                                   "y": box["topleft"]["y"] + half_height + 0.000001},
+                       "topright": {"x": box["topright"]["x"] + half_width + 0.000001 ,
+                                    "y": box["topright"]["y"]+ half_height + 0.000001},
+                       "bottomleft": {"x": box["bottomleft"]["x"],
+                                      "y": box["bottomleft"]["y"]},
+                       "bottomright":{"x": box["topright"]["x"]  + half_width + 0.000001,
+                                      "y": box["bottomright"]["y"]}                              
+        })
+    
+    # define bottom right box
+    quad_boxes.append({"topleft": {"x": box["topleft"]["x"] + half_width + 0.000001,
+                                   "y": box["topleft"]["y"] + half_height + 0.000001},
+                       "topright": {"x": box["bottomright"]["x"],
+                                    "y": box["topright"]["y"]+ half_height + 0.000001},
+                       "bottomleft": {"x": box["bottomleft"]["x"] + half_width + 0.000001,
+                                      "y": box["bottomleft"]["y"]},
+                       "bottomright":{"x": box["bottomright"]["x"],
+                                      "y": box["bottomright"]["y"]}                              
+        })
+    
+    return quad_boxes
+    
 
     
 def Is_Point_Within_Charlotte_Boundary(lat, lng):
@@ -75,8 +129,13 @@ print(type(charlote_boundary_polygon))
 dist = Lat_Lng_Distance_From(36.0001, -80.0001, 36.1001, -80.0001)
 print(dist)
 
-charlotte_box = bounding_box(charlote_boundary_polygon.exterior.coords.xy)
+charlotte_box = Bounding_Poligon_Into_Box(charlote_boundary_polygon.exterior.coords.xy)
 print(charlotte_box)
+
+quad_boxes = Quad_Box(charlotte_box)
+print(len(quad_boxes))
+print(quad_boxes)
+
 
  
  
