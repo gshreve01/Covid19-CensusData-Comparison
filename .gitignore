@@ -2,3 +2,4 @@ config.py
 
 scrap_notes
 zillow_key.conf
+__pycache__/
