@@ -56,7 +56,7 @@ def Load_Census_Data():
     census_tables = {"Population" : "B01003_001E",
                      "Per Capita Income": "B06011_001E",
                      "Median Household Income": "B19013_001E",
-                     "Total Pop by Tenure": "B25008_002E"}
+                     "Household Owner": "B07013_002E"}
     
     
     # convert to list of list of zip codes
