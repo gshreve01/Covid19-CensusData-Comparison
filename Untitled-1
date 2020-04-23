@@ -1,0 +1,24 @@
+
+{'name': 'B98012',
+  'description': 'TOTAL POPULATION COVERAGE RATE BY SEX',
+  'variables': 'https://api.census.gov/data/2017/acs/acs5/groups/B98012.json'},
+
+  {'name': 'B08536',
+  'description': 'AGGREGATE TRAVEL TIME TO WORK (IN MINUTES) OF WORKERS BY MEANS OF TRANSPORTATION TO WORK FOR WORKPLACE GEOGRAPHY',
+  'variables': 'https://api.census.gov/data/2017/acs/acs5/groups/B08536.json'},
+
+  {'name': 'B98011',
+  'description': 'HOUSING UNIT COVERAGE RATE',
+  'variables': 'https://api.census.gov/data/2017/acs/acs5/groups/B98011.json'},
+
+  {'name': 'B08303',
+  'description': 'TRAVEL TIME TO WORK',
+  'variables': 'https://api.census.gov/data/2017/acs/acs5/groups/B08303.json'},
+
+  {'name': 'B05004',
+  'description': 'MEDIAN AGE BY NATIVITY AND CITIZENSHIP STATUS BY SEX',
+  'variables': 'https://api.census.gov/data/2017/acs/acs5/groups/B05004.json'},
+
+  {'name': 'B05003',
+  'description': 'SEX BY AGE BY NATIVITY AND CITIZENSHIP STATUS',
+  'variables': 'https://api.census.gov/data/2017/acs/acs5/groups/B05003.json'},
