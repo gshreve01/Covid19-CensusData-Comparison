@@ -1,0 +1,56 @@
+https://api.census.gov/data/2018/acs/acsse?get=K200001_001E,NAME&for=county%20subdivision:*&in=state:37&in=county:*&key=972cf3f08f68b6e55893b0ff405867f65ac840eb
+
+	https://api.census.gov/data/2018/acs/acsse?get=K200001_001E,NAME&for=region:*&key=972cf3f08f68b6e55893b0ff405867f65ac840eb
+	
+		https://api.census.gov/data/2018/acs/acsse?get=K200001_001E,NAME&for=state:*&key=972cf3f08f68b6e55893b0ff405867f65ac840eb
+		
+		
+North Carolina State Code: 37
+
+https://api.census.gov/data/2018/acs/acsse?get=K200001_001E,NAME&for=place:10500&in=state:37
+
+
+population by state - estimates in 2014
+https://api.census.gov/data/2014/pep/natstprc?get=STNAME,POP&DATE_=7&for=state:*
+
+
+http://www.zillow.com/webservice/GetSearchResults.htm?zws-id=X1-ZWz179yot8r9jf_282ek&address=2114+Bigelow+Ave&citystatezip=Seattle%2C+WA
+
+
+
+https://maps.googleapis.com/maps/api/geocode/json?latlng=35.1410355,-80.6990031&key=AIzaSyCYoDvAcVGo8l0Kt7dEZ9EGVPEBUfJa3Uo
+
+
+Bounding box for Charlotte NC
+https://nominatim.openstreetmap.org/search.php?q=Charlotte%20NC&polygon_geojson=1&format=json
+
+Bounding box for zip code 28105
+https://nominatim.openstreetmap.org/search.php?q=28105&polygon_geojson=1&format=json
+
+
+
+182
+
+Based on another question on stackoverflow, I got this code.. This calculates the result in meters, not in miles :)
+
+ public static float distFrom(float lat1, float lng1, float lat2, float lng2) {
+    double earthRadius = 6371000; //meters
+    double dLat = Math.toRadians(lat2-lat1);
+    double dLng = Math.toRadians(lng2-lng1);
+    double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+               Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+               Math.sin(dLng/2) * Math.sin(dLng/2);
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    float dist = (float) (earthRadius * c);
+
+    return dist;
+    }
+	
+Tom-Tom API Password
+2pby7evD8W#*3AA
+
+Tom-Tom API Key
+obZSOraN3YO9kTvzCApQ7ZDpRDOqPQx1
+
+
+
